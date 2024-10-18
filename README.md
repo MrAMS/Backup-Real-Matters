@@ -1,14 +1,16 @@
 # Backup-Real-Matters
 
-备份真正重要的东西
+备份真正重要的东西：自动备份最近修改且创建和修改日期不同的文件到远程服务器，并自动清理多余和过时的备份版本
 
 ## Intro
 
-What are **real matters** that worth us to backup carefully?
-- Recently modified: The work at hand is more important, old files may no longer be used.
-- Modified after created: Your creation is the most important thing and creation means modified more than once by yourself. The files that have not been modified probably was downloaded from the internet which are easy to get back.
+Most of the time, we use `rsync` to back up specific folders. However, we need to continuously update the folder list and end up paying for cold data that may no longer be needed.
 
-So this bash script will use `find` to get a list of recently modified & unbacked files and filter out files with the same birth date and modification date. Then, use `scp` to copy files to remote server through SSH and renamed with a date prefix.
+Which are **real matters** that worth us to backup carefully?
+- Recently modified: Current work takes priority, as older files may no longer be relevant.
+- Modified after created: Your original creations matter most, and if a file has been modified multiple times, it likely holds value. Files that haven't been altered since creation were probably downloaded and can easily be retrieved again if needed.
+
+This bash script leverages the `find` command to generate a list of recently modified and unbacked files, filtering out those with identical creation and modification dates. It then uses `scp` to transfer these files to a remote server over SSH, adding a date prefix to the filenames. Additionally, the script deletes redundant or outdated backups to optimize server storage and minimize usage.
 
 ## Usage
 
@@ -38,7 +40,8 @@ File `ignores.conf` which contain ignore patterns. You can use `#` as a line com
 ```
 
 ## TODO
-- [ ] Only keep the most recent N versions of each file on the server
-- [ ] Remove files that are too old
+- [x] Keep only the most recent 5 versions of each file modified within the last week on the server
+- [x] Keep only one version of each file that hasn’t been modified in the past week.
+- [ ] Delete files that are too old.
 
-Welcome for PR
+Pull requests are welcome.
