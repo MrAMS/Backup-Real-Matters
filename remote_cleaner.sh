@@ -41,3 +41,5 @@ for i in "${!dirs[@]}"; do
         fi
     done
 done
+
+echo "finish once at $(date '+%Y-%m-%d %H:%M')\n" >> "log"

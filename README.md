@@ -53,7 +53,7 @@ $ crontab -e
 ```
 Paste the following and remember to change the `/the/absolute/path/of/script/directory` path below.
 ```bash
-@daily (cd /home/santiego/proj/scripts/backup-recent && export TERM=xterm-256color && BASH_ENV=~/.bashrc bash -l ./main.sh -b) 1> /dev/null 2> /tmp/backup-recent.error
+@daily (cd /the/absolute/path/of/script/directory && export TERM=xterm-256color && BASH_ENV=~/.bashrc bash -l ./main.sh -b) 1> /dev/null 2> /tmp/backup-recent.error
 ```
 
 ## TODO
