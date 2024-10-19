@@ -45,7 +45,7 @@ Note that all backed up files are stored in the path `$HOME/.backup-recent` on t
 
 ### Run daily
 
-Also, you can add a service to systemd to run backup script on OS startup.
+Also, you can use `crontab` to run script daily.
 
 ```shell
 $ dirname "$(readlink -f ./main.sh)" # get the absolute path
