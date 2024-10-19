@@ -2,7 +2,7 @@
 
 *Backup the most valuable content at the least cost*
 
-备份真正重要的东西：自动备份最近修改且创建和修改日期不同的文件到远程服务器，每个文件仅保留最近的5个版本，修改时间在一周之前的文件仅保留最新的一个版本。
+以最低成本备份重要的东西：自动备份**最近修改且创建和修改日期不同的文件**到远程服务器，每个文件仅保留最近的5个版本，修改时间在一周之前的文件仅保留最新的一个版本，以优化存储。
 
 ## Intro
 
@@ -47,13 +47,13 @@ Note that all backed up files are stored in the path `$HOME/.backup-recent` on t
 
 Also, you can use `crontab` to run script daily.
 
-```shell
+```bash
 $ dirname "$(readlink -f ./main.sh)" # get the absolute path
 $ crontab -e
 ```
 Paste the following and remember to change the `/the/absolute/path/of/script/directory` path below.
-```
-@daily cd /the/absolute/path/of/script/directory && echo "$(date '+%Y-%m-%d %H:%M')\n">>log && ./main.sh -b -s
+```bash
+@daily (cd /home/santiego/proj/scripts/backup-recent && export TERM=xterm-256color && BASH_ENV=~/.bashrc bash -l ./main.sh -b) 1> /dev/null 2> /tmp/backup-recent.error
 ```
 
 ## TODO
