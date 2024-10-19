@@ -1,10 +1,12 @@
 # Backup-Real-Matters
 
-备份真正重要的东西：自动备份最近修改且创建和修改日期不同的文件到远程服务器，并自动清理多余和过时的备份版本
+*Backup the most valuable content at the least cost*
+
+备份真正重要的东西：自动备份最近修改且创建和修改日期不同的文件到远程服务器，每个文件仅保留最近的5个版本，修改时间在一周之前的文件仅保留最新的一个版本。
 
 ## Intro
 
-Most of the time, we use `rsync` to back up specific folders. However, we need to continuously update the folder list and end up paying for cold data that may no longer be needed.
+Most of the time, we use `rsync` or `yadm` to back up specific folders. However, we need to continuously update the folder and ignore list and end up paying for cold data that may no longer be needed.
 
 Which are **real matters** that worth us to backup carefully?
 - Recently modified: Current work takes priority, as older files may no longer be relevant.
@@ -39,9 +41,25 @@ File `ignores.conf` which contain ignore patterns. You can use `#` as a line com
 # */toolchain/*
 ```
 
+Note that all backed up files are stored in the path `$HOME/.backup-recent` on the remote server.
+
+### Run daily
+
+Also, you can add a service to systemd to run backup script on OS startup.
+
+```shell
+$ dirname "$(readlink -f ./main.sh)" # get the absolute path
+$ crontab -e
+```
+Paste the following and remember to change the `/the/absolute/path/of/script/directory` path below.
+```
+@daily cd /the/absolute/path/of/script/directory && echo "$(date '+%Y-%m-%d %H:%M')\n">>log && ./main.sh -b -s
+```
+
 ## TODO
 - [x] Keep only the most recent 5 versions of each file modified within the last week on the server
 - [x] Keep only one version of each file that hasn’t been modified in the past week.
+- [ ] TUI for user to browse all backedup files
 - [ ] Delete files that are too old.
 
 Pull requests are welcome.

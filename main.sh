@@ -12,28 +12,34 @@ COL_END=`tput sgr0`
 echo "Welcome to Backup-Real-Matters"
 
 usage() {
- echo "Usage: $0 [OPTIONS]"
- echo "Options:"
- echo " -h, --help      Display this help message"
- echo " -b, --batch     Enable batch mode, no ask for user"
+    echo "Usage: $0 [OPTIONS]"
+    echo "Options:"
+    echo " -h, --help      Display this help message"
+    echo " -b, --batch     Enable batch mode, no ask for user"
+    echo " -s, --sleep     Sleep for a while before start"
 }
 
 batch_mode=false
 handle_options() {
   while [ $# -gt 0 ]; do
     case $1 in
-      -h | --help)
-        usage
-        exit 0
-        ;;
-      -b | --batch)
-        batch_mode=true
-        ;;
-      *)
-        echo "Invalid option: $1" >&2
-        usage
-        exit 1
-        ;;
+        -h | --help)
+            usage
+            exit 0
+            ;;
+        -b | --batch)
+            batch_mode=true
+            echo "batch mode: ON"
+            ;;
+        -s | --sleep)
+            echo "sleep: ON"
+            sleep 15
+            ;;
+        *)
+            echo "Invalid option: $1" >&2
+            usage
+            exit 1
+            ;;
     esac
     shift
   done
@@ -48,18 +54,18 @@ DIR_BACKUP=".backup-recent"
 
 echo "step 0: reading from configure..."
 if [ ! -f "server.conf" ]; then
-    echo "[ERRO]The file ./server.conf does not exist."
+    echo "${ECHO_ERRO}The file ./server.conf does not exist."
     touch "server.conf"
     exit 1
 fi
 server="$(<"server.conf")"
 if [ ! -f "dirs.conf" ]; then
-    echo "[ERRO] The file ./dirs.conf does not exist."
+    echo "${ECHO_ERRO} The file ./dirs.conf does not exist."
     touch "dirs.conf"
     exit 1
 fi
 if [ ! -f "ignores.conf" ]; then
-    echo "$ECHO_WARN The file ignores.conf does not exist, create new."
+    echo "${ECHO_WARN} The file ignores.conf does not exist, create new."
     touch "ignores.conf"
 fi
 lasttime=$(date -d "1 week ago" '+%Y-%m-%d %H:%M')
@@ -97,7 +103,7 @@ for i in "${!dirs[@]}"; do
                 files_size_tot=$((file_size+files_size_tot))
                 echo "$file $(numfmt --to=iec-i $file_size)"
             else
-                echo "$file ${COL_YEL}presumed unimportant, skipped${COL_END}"
+                echo "$file ${COL_WARN}presumed unimportant, skipped${COL_END}"
             fi
         done < <(find "${dirs[i]}" -type f -not \
             \(\
@@ -129,9 +135,15 @@ for i in "${!files[@]}"; do
     file=${files[i]}
     echo "[$((i+1))/${#files[*]}] Copying $file..."
     dir="\$HOME/$DIR_BACKUP$(dirname "$file")"
-    ssh $server "mkdir -p \""$dir"\"" && \
-    scp -C -p -B "$file" \
-        $server:\""$dir/$(date '+%Y%m%d-%H%M')-$(basename "$file")"\"
+    if ! ssh $server "mkdir -p \""$dir"\""; then
+        echo "${ECHO_ERRO} ssh mkdir fail."
+        exit 1
+    fi
+    if ! scp -C -p -B "$file" \
+        $server:\""$dir/$(date '+%Y%m%d-%H%M')-$(basename "$file")"\"; then
+        echo "${ECHO_ERRO} scp copy fail."
+        exit 1
+    fi
 done
 
 date '+%Y-%m-%d %H:%M' > "lasttime.conf"
@@ -151,12 +163,18 @@ fi
 
 # STEP 4
 
-echo "step 4: running remote server cleanner..."
+echo "step 4: running remote server cleaner..."
 
-remote_script_path="\"\$HOME/$DIR_BACKUP/remote_cleanner.sh\""
-scp -C -p -B "./remote_cleanner.sh" \
-        $server:$remote_script_path && \
-ssh $server "chmod +x $remote_script_path && $remote_script_path"
+remote_script_path="\"\$HOME/$DIR_BACKUP/remote_cleaner.sh\""
+if ! scp -C -p -B "./remote_cleaner.sh" \
+        $server:$remote_script_path; then
+    echo "${ECHO_ERRO} ssh scp fail."
+    exit 1
+fi
+if ! ssh $server "chmod +x $remote_script_path && $remote_script_path"; then
+    echo "${ECHO_ERRO} cleaner script run fail."
+    exit 1
+fi
 
 echo "Done."
 
