@@ -4,9 +4,7 @@ set -e
 
 echo "Welcome to Backup-Real-Matters Remote Cleanner"
 
-DIR_BACKUP=".backup-recent"
-KEEP_SAME_MAX=5
-KEEP_ONE_TIME="1 week ago"
+source configure.sh
 
 declare -a dirs
 while IFS= read -r -d '' dir; do
@@ -42,4 +40,4 @@ for i in "${!dirs[@]}"; do
     done
 done
 
-echo "finish once at $(date '+%Y-%m-%d %H:%M')\n" >> "log"
+echo "$(date '+%Y-%m-%d %H:%M') -> $(du -sh "$HOME/$DIR_BACKUP" | awk '{print $1}')" >> "cleaner.log"
