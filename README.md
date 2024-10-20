@@ -54,15 +54,15 @@ $ crontab -e
 ```
 Paste the following and remember to change the `/the/absolute/path/of/script/directory` path below.
 ```bash
-@daily (cd /the/absolute/path/of/script/directory && export TERM=xterm-256color && BASH_ENV=~/.bashrc bash -l ./main.sh -b) &> /tmp/backup-recent.log
+@daily (cd /the/absolute/path/of/script/directory && BASH_ENV=~/.bashrc bash -l ./main.sh -b) &> /tmp/backup-recent.log
 ```
 Or run at OS startup
 ```bash
-@reboot (sleep 15 && cd /the/absolute/path/of/script/directory && export TERM=xterm-256color && BASH_ENV=~/.bashrc bash -l ./main.sh -b) &> /tmp/backup-recent.log
+@reboot (sleep 30 && cd /the/absolute/path/of/script/directory && BASH_ENV=~/.bashrc bash -l ./main.sh -b) &> /tmp/backup-recent.log
 ```
 Moreover, You can install `notify-send`(likely pre-installed) and pass `-n` or `--notify` to `main.sh` for desktop notifications.
 ```bash
-@reboot (sleep 15 && cd /the/absolute/path/of/script/directory && export TERM=xterm-256color && BASH_ENV=~/.bashrc bash -l ./main.sh -b -n) &> /tmp/backup-recent.log
+@reboot (sleep 30 && cd /the/absolute/path/of/script/directory && XDG_RUNTIME_DIR=/run/user/$(id -u) BASH_ENV=~/.bashrc bash -l ./main.sh -b -n) &> /tmp/backup-recent.log
 ```
 
 ## TODO

@@ -18,8 +18,7 @@ error_ext(){
     echo "${ECHO_ERRO} $1"
     if $notify; then
         notify-send -u critical "Backup Fail" \
-            "Backup fail at $(date '+%Y-%m-%d %H:%M'), \
-            reason: $1"
+            "Backup fail at $(date '+%Y-%m-%d %H:%M'), reason: $1"
     fi
     exit 1
 }
@@ -133,7 +132,7 @@ for i in "${!dirs[@]}"; do
             -print0)
     # set +x
     else
-        echo "${ECHO_WARN} ${dirs[i]} does not exist."
+        error_ext "${dirs[i]} does not exist."
     fi
 done
 
