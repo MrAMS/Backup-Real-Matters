@@ -40,4 +40,4 @@ for i in "${!dirs[@]}"; do
     done
 done
 
-echo "$(date '+%Y-%m-%d %H:%M') -> $(du -sh "$HOME/$DIR_BACKUP" | awk '{print $1}')" >> "cleaner.log"
+echo "$(date '+%Y-%m-%d %H:%M') $(du -sh "$HOME/$DIR_BACKUP" | awk '{print $1}')" >> "cleaner.log"

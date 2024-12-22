@@ -115,7 +115,7 @@ for i in "${!dirs[@]}"; do
         while IFS= read -r -d '' file; do
             mod_time=$(stat -c "%Y" "$file")
             birth_time=$(stat -c "%W" "$file")
-            if [ $((mod_time - birth_time)) -gt 2 ]; then
+            if [ $((mod_time - birth_time)) -gt 30 ]; then
                 files+=("$file")
                 file_size=$(stat -c%s "$file")
                 files_size_tot=$((file_size+files_size_tot))
