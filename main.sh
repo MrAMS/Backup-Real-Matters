@@ -115,9 +115,9 @@ for i in "${!dirs[@]}"; do
         while IFS= read -r -d '' file; do
             mod_time=$(stat -c "%Y" "$file")
             birth_time=$(stat -c "%W" "$file")
-            if [ $((mod_time - birth_time)) -gt 30 ]; then
+            file_size=$(stat -c%s "$file")
+            if [ $((mod_time - birth_time)) -gt 30 ] && [[ "$file_size" -lt "$MAX_FILE_SIZE" ]]; then
                 files+=("$file")
-                file_size=$(stat -c%s "$file")
                 files_size_tot=$((file_size+files_size_tot))
                 echo "$file $(numfmt --to=iec-i $file_size)"
             else
