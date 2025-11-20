@@ -189,6 +189,6 @@ echo "Done."
 
 if $notify; then
     notify-send -u normal "Backup-Real-Matters Done" \
-    "Backup total size of backups: $backup_size, remote storage usage: $remote_size, done at $(date '+%Y-%m-%d %H:%M')"
+    "Backups size: $backup_size, remote total storage: $remote_size, done at $(date '+%Y-%m-%d %H:%M')"
 fi
 
